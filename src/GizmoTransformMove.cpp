@@ -27,18 +27,22 @@
 // SOFTWARE.
 //
 #include "GizmoTransformMove.h"
-#include "LibBase.h"
 
-IGizmo *CreateMoveGizmo() { return new CGizmoTransformMove; }
+IGizmo *CreateMoveGizmo()
+{
+    return new CGizmoTransformMove;
+}
 
-CGizmoTransformMove::CGizmoTransformMove() : CGizmoTransform()
+CGizmoTransformMove::CGizmoTransformMove()
+    : CGizmoTransform()
 {
     m_MoveType = MOVE_NONE;
 }
 
 CGizmoTransformMove::~CGizmoTransformMove() {}
 
-bool CGizmoTransformMove::GetOpType(MOVETYPE &type, unsigned int x,
+bool CGizmoTransformMove::GetOpType(MOVETYPE&    type,
+                                    unsigned int x,
                                     unsigned int y)
 {
     tvector3 rayOrigin, rayDir, df;
@@ -51,13 +55,10 @@ bool CGizmoTransformMove::GetOpType(MOVETYPE &type, unsigned int x,
                   GetTransformedVector(2).Length());
 
     tmatrix mt;
-    if (mLocation == LOCATE_LOCAL)
-    {
+    if (mLocation == LOCATE_LOCAL) {
         mt = *m_pMatrix;
         mt.Inverse();
-    }
-    else
-    {
+    } else {
         // world
         mt.Translation(-m_pMatrix->V4.position);
     }
@@ -65,63 +66,46 @@ bool CGizmoTransformMove::GetOpType(MOVETYPE &type, unsigned int x,
     // plan 1 : X/Z
     df = RayTrace2(rayOrigin, rayDir, GetTransformedVector(1), mt, trss, false);
 
-    if ((df.x >= 0) && (df.x <= 1) && (fabs(df.z) < 0.1f))
-    {
+    if ((df.x >= 0) && (df.x <= 1) && (fabs(df.z) < 0.1f)) {
         type = MOVE_X;
         return true;
-    }
-    else if ((df.z >= 0) && (df.z <= 1) && (fabs(df.x) < 0.1f))
-    {
+    } else if ((df.z >= 0) && (df.z <= 1) && (fabs(df.x) < 0.1f)) {
         type = MOVE_Z;
         return true;
-    }
-    else if ((df.x < 0.6f) && (df.z < 0.6f) && (df.x > 0.5f) && (df.z > 0.5f))
-    {
+    } else if ((df.x < 0.6f) && (df.z < 0.6f) && (df.x > 0.5f) &&
+               (df.z > 0.5f)) {
         type = MOVE_XZ;
         return true;
-    }
-    else
-    {
+    } else {
 
         // plan 2 : X/Y
-        df = RayTrace2(rayOrigin, rayDir, GetTransformedVector(2), mt, trss,
-                       false);
+        df = RayTrace2(
+            rayOrigin, rayDir, GetTransformedVector(2), mt, trss, false);
 
-        if ((df.x >= 0) && (df.x <= 1) && (fabs(df.y) < 0.1f))
-        {
+        if ((df.x >= 0) && (df.x <= 1) && (fabs(df.y) < 0.1f)) {
             type = MOVE_X;
             return true;
         }
-        if ((df.y >= 0) && (df.y <= 1) && (fabs(df.x) < 0.1f))
-        {
+        if ((df.y >= 0) && (df.y <= 1) && (fabs(df.x) < 0.1f)) {
             type = MOVE_Y;
             return true;
-        }
-        else if ((df.x < 0.6f) && (df.y < 0.6f) && (df.x > 0.5f) &&
-                 (df.y > 0.5f))
-        {
+        } else if ((df.x < 0.6f) && (df.y < 0.6f) && (df.x > 0.5f) &&
+                   (df.y > 0.5f)) {
             type = MOVE_XY;
             return true;
-        }
-        else
-        {
+        } else {
             // plan 3: Y/Z
-            df = RayTrace2(rayOrigin, rayDir, GetTransformedVector(0), mt, trss,
-                           false);
+            df = RayTrace2(
+                rayOrigin, rayDir, GetTransformedVector(0), mt, trss, false);
 
-            if ((df.y >= 0) && (df.y <= 1) && (fabs(df.z) < 0.1f))
-            {
+            if ((df.y >= 0) && (df.y <= 1) && (fabs(df.z) < 0.1f)) {
                 type = MOVE_Y;
                 return true;
-            }
-            else if ((df.z >= 0) && (df.z <= 1) && (fabs(df.y) < 0.1f))
-            {
+            } else if ((df.z >= 0) && (df.z <= 1) && (fabs(df.y) < 0.1f)) {
                 type = MOVE_Z;
                 return true;
-            }
-            else if ((df.y < 0.6f) && (df.z < 0.6f) && (df.y > 0.5f) &&
-                     (df.z > 0.5f))
-            {
+            } else if ((df.y < 0.6f) && (df.z < 0.6f) && (df.y > 0.5f) &&
+                       (df.z > 0.5f)) {
                 type = MOVE_YZ;
                 return true;
             }
@@ -134,8 +118,7 @@ bool CGizmoTransformMove::GetOpType(MOVETYPE &type, unsigned int x,
 
 bool CGizmoTransformMove::OnMouseDown(unsigned int x, unsigned int y)
 {
-    if (m_pMatrix)
-    {
+    if (m_pMatrix) {
         return GetOpType(m_MoveType, x, y);
     }
 
@@ -145,8 +128,7 @@ bool CGizmoTransformMove::OnMouseDown(unsigned int x, unsigned int y)
 
 void CGizmoTransformMove::OnMouseMove(unsigned int x, unsigned int y)
 {
-    if (m_MoveType != MOVE_NONE)
-    {
+    if (m_MoveType != MOVE_NONE) {
         tvector3 rayOrigin, rayDir, df, inters;
 
         BuildRay(x, y, rayOrigin, rayDir);
@@ -154,8 +136,7 @@ void CGizmoTransformMove::OnMouseMove(unsigned int x, unsigned int y)
 
         tvector3 axeX(1, 0, 0), axeY(0, 1, 0), axeZ(0, 0, 1);
 
-        if (mLocation == LOCATE_LOCAL)
-        {
+        if (mLocation == LOCATE_LOCAL) {
             axeX.TransformVector(*m_pMatrix);
             axeY.TransformVector(*m_pMatrix);
             axeZ.TransformVector(*m_pMatrix);
@@ -166,33 +147,34 @@ void CGizmoTransformMove::OnMouseMove(unsigned int x, unsigned int y)
 
         df = inters - m_LockVertex;
 
-        switch (m_MoveType)
-        {
-        case MOVE_XZ:
-            df = tvector3(df.Dot(axeX), 0, df.Dot(axeZ));
-            break;
-        case MOVE_X:
-            df = tvector3(df.Dot(axeX), 0, 0);
-            break;
-        case MOVE_Z:
-            df = tvector3(0, 0, df.Dot(axeZ));
-            break;
-        case MOVE_XY:
-            df = tvector3(df.Dot(axeX), df.Dot(axeY), 0);
-            break;
-        case MOVE_YZ:
-            df = tvector3(0, df.Dot(axeY), df.Dot(axeZ));
-            break;
-        case MOVE_Y:
-            df = tvector3(0, df.Dot(axeY), 0);
-            break;
+        switch (m_MoveType) {
+            case MOVE_XZ:
+                df = tvector3(df.Dot(axeX), 0, df.Dot(axeZ));
+                break;
+            case MOVE_X:
+                df = tvector3(df.Dot(axeX), 0, 0);
+                break;
+            case MOVE_Z:
+                df = tvector3(0, 0, df.Dot(axeZ));
+                break;
+            case MOVE_XY:
+                df = tvector3(df.Dot(axeX), df.Dot(axeY), 0);
+                break;
+            case MOVE_YZ:
+                df = tvector3(0, df.Dot(axeY), df.Dot(axeZ));
+                break;
+            case MOVE_Y:
+                df = tvector3(0, df.Dot(axeY), 0);
+                break;
+            case MOVE_NONE:
+            case MOVE_XYZ:
+                break;
         }
 
         tvector3 adf;
 
         tmatrix mt;
-        if (m_bUseSnap)
-        {
+        if (m_bUseSnap) {
             SnapIt(df.x, m_MoveSnap.x);
             SnapIt(df.y, m_MoveSnap.y);
             SnapIt(df.z, m_MoveSnap.z);
@@ -207,12 +189,9 @@ void CGizmoTransformMove::OnMouseMove(unsigned int x, unsigned int y)
 
         if (mEditPos)
             *mEditPos = m_pMatrix->V4.position;
-    }
-    else
-    {
+    } else {
         // predict move
-        if (m_pMatrix)
-        {
+        if (m_pMatrix) {
             GetOpType(m_MoveTypePredict, x, y);
         }
     }
@@ -227,15 +206,13 @@ void CGizmoTransformMove::Draw()
 {
     ComputeScreenFactor();
 
-    if (m_pMatrix)
-    {
+    if (m_pMatrix) {
         // glDisable(GL_DEPTH_TEST);
         tvector3 orig = m_pMatrix->GetTranslation();
 
         tvector3 axeX(1, 0, 0), axeY(0, 1, 0), axeZ(0, 0, 1);
 
-        if (mLocation == LOCATE_LOCAL)
-        {
+        if (mLocation == LOCATE_LOCAL) {
             axeX.TransformVector(*m_pMatrix);
             axeY.TransformVector(*m_pMatrix);
             axeZ.TransformVector(*m_pMatrix);
@@ -259,18 +236,15 @@ void CGizmoTransformMove::Draw()
         tvector4 borderColXY = vector4(CGizmoTransform::Z_AXIS_COLOR, 1);
         tvector4 borderColYZ = vector4(CGizmoTransform::X_AXIS_COLOR, 1);
 
-        if (m_MoveTypePredict == MOVE_XZ)
-        {
+        if (m_MoveTypePredict == MOVE_XZ) {
             innerColXZ = vector4(CGizmoTransform::SELECTION_COLOR, .5f);
             borderColXZ = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }
-        if (m_MoveTypePredict == MOVE_XY)
-        {
+        if (m_MoveTypePredict == MOVE_XY) {
             innerColXY = vector4(CGizmoTransform::SELECTION_COLOR, .5f);
             borderColXY = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }
-        if (m_MoveTypePredict == MOVE_YZ)
-        {
+        if (m_MoveTypePredict == MOVE_YZ) {
             innerColYZ = vector4(CGizmoTransform::SELECTION_COLOR, .5f);
             borderColYZ = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }

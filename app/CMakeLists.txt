@@ -1,15 +1,17 @@
 # Projects Settings
-cmake_minimum_required (VERSION 3.1)
-project (example)
+cmake_minimum_required (VERSION 3.10)
+project(example)
 
 # The main executable
 add_executable(${PROJECT_NAME}
   example.cpp
 )
-
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_COMPILE_COMMANDS ON)
+if (NOT MSVC)
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
-
+else()
+target_compile_options(${PROJECT_NAME} PRIVATE /W4)
+endif()
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE glfw

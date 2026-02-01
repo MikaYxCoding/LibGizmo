@@ -28,15 +28,14 @@
 //
 
 #include "GizmoTransformRender.h"
-#include "LibBase.h"
 #include <vector>
 
 unsigned int CGizmoTransformRender::SHADER_PROG_ID = 0;
 unsigned int CGizmoTransformRender::VBO = 0;
 unsigned int CGizmoTransformRender::VAO = 0;
 
-glm::mat4 CGizmoTransformRender::proj = glm::mat4();
-glm::mat4 CGizmoTransformRender::view = glm::mat4();
+glm::mat4          CGizmoTransformRender::proj = glm::mat4();
+glm::mat4          CGizmoTransformRender::view = glm::mat4();
 std::vector<float> CGizmoTransformRender::lineData = std::vector<float>();
 std::vector<float> CGizmoTransformRender::triangleData = std::vector<float>();
 
@@ -90,10 +89,14 @@ void CGizmoTransformRender::Init()
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float),
-                          (void *)0);
+    glVertexAttribPointer(
+        0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(float),
+    glVertexAttribPointer(1,
+                          4,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          7 * sizeof(float),
                           (void *)(sizeof(float) * 3));
     glEnableVertexAttribArray(1);
 
@@ -103,23 +106,24 @@ void CGizmoTransformRender::Init()
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void CGizmoTransformRender::AddTriangleToDraw(tvector3 pt1, tvector3 pt2,
-                                              tvector3 pt3, tvector4 col)
+void CGizmoTransformRender::AddTriangleToDraw(tvector3 pt1,
+                                              tvector3 pt2,
+                                              tvector3 pt3,
+                                              tvector4 col)
 {
     float *buffer = &col[0];
-    for (tvector3 pt : {pt1, pt2, pt3})
-    {
-        triangleData.insert(triangleData.end(), {pt.x, pt.y, pt.z});
+    for (tvector3 pt : { pt1, pt2, pt3 }) {
+        triangleData.insert(triangleData.end(), { pt.x, pt.y, pt.z });
         triangleData.insert(triangleData.end(), buffer, buffer + 4);
     }
 }
-void CGizmoTransformRender::AddLineToDraw(tvector3 pt1, tvector3 pt2,
+void CGizmoTransformRender::AddLineToDraw(tvector3 pt1,
+                                          tvector3 pt2,
                                           tvector4 col)
 {
     float *buffer = &col[0];
-    for (tvector3 pt : {pt1, pt2})
-    {
-        lineData.insert(lineData.end(), {pt.x, pt.y, pt.z});
+    for (tvector3 pt : { pt1, pt2 }) {
+        lineData.insert(lineData.end(), { pt.x, pt.y, pt.z });
         lineData.insert(lineData.end(), buffer, buffer + 4);
     }
 }
@@ -130,34 +134,42 @@ void CGizmoTransformRender::Draw()
         Init();
 
     glUseProgram(SHADER_PROG_ID);
-    glUniformMatrix4fv(glGetUniformLocation(SHADER_PROG_ID, "proj"), 1,
-                       GL_FALSE, &CGizmoTransformRender::proj[0][0]);
-    glUniformMatrix4fv(glGetUniformLocation(SHADER_PROG_ID, "view"), 1,
-                       GL_FALSE, &CGizmoTransformRender::view[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(SHADER_PROG_ID, "proj"),
+                       1,
+                       GL_FALSE,
+                       &CGizmoTransformRender::proj[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(SHADER_PROG_ID, "view"),
+                       1,
+                       GL_FALSE,
+                       &CGizmoTransformRender::view[0][0]);
 
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, lineData.size() * sizeof(lineData),
-                 &lineData[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 lineData.size() * sizeof(lineData),
+                 &lineData[0],
+                 GL_DYNAMIC_DRAW);
 
     glDrawArrays(GL_LINES, 0, lineData.size() / 7);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, triangleData.size() * sizeof(triangleData),
-                 &triangleData[0], GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,
+                 triangleData.size() * sizeof(triangleData),
+                 &triangleData[0],
+                 GL_DYNAMIC_DRAW);
     glDrawArrays(GL_TRIANGLES, 0, triangleData.size() / 7);
 
     lineData.clear();
     triangleData.clear();
 }
 
-void CGizmoTransformRender::PrepareCircle(const tvector3 &orig,
-                                          const tvector3 &vtx,
-                                          const tvector3 &vty, tvector4 color)
+void CGizmoTransformRender::PrepareCircle(const tvector3& orig,
+                                          const tvector3& vtx,
+                                          const tvector3& vty,
+                                          tvector4        color)
 {
     tvector3 prevVt;
-    for (int i = 0; i <= 50; i++)
-    {
+    for (int i = 0; i <= 50; i++) {
         tvector3 vt;
         vt = vtx * cos((2 * ZPI / 50) * i);
         vt += vty * sin((2 * ZPI / 50) * i);
@@ -170,22 +182,21 @@ void CGizmoTransformRender::PrepareCircle(const tvector3 &orig,
     }
 }
 
-void CGizmoTransformRender::PrepareCircleHalf(const tvector3 &orig,
-                                              const tvector3 &vtx,
-                                              const tvector3 &vty,
-                                              tplane &camPlan, tvector4 color)
+void CGizmoTransformRender::PrepareCircleHalf(const tvector3& orig,
+                                              const tvector3& vtx,
+                                              const tvector3& vty,
+                                              tplane&         camPlan,
+                                              tvector4        color)
 {
 
-    bool isFirstVt = true;
+    bool     isFirstVt = true;
     tvector3 prevVt;
-    for (int i = 0; i <= 30; i++)
-    {
+    for (int i = 0; i <= 30; i++) {
         tvector3 vt;
         vt = vtx * cos((ZPI / 30) * i);
         vt += vty * sin((ZPI / 30) * i);
         vt += orig;
-        if (camPlan.DotNormal(vt))
-        {
+        if (camPlan.DotNormal(vt)) {
             if (!isFirstVt)
                 AddLineToDraw(prevVt, vt, color);
 
@@ -195,16 +206,18 @@ void CGizmoTransformRender::PrepareCircleHalf(const tvector3 &orig,
     }
 }
 
-void CGizmoTransformRender::PrepareCubeAxis(const tvector3 &orig,
-                                            const tvector3 &axis,
-                                            const tvector3 &vtx,
-                                            const tvector3 &vty, float fct,
-                                            float fct2, const tvector4 &col)
+void CGizmoTransformRender::PrepareCubeAxis(const tvector3& orig,
+                                            const tvector3& axis,
+                                            const tvector3& vtx,
+                                            const tvector3& vty,
+                                            float           fct,
+                                            float           fct2,
+                                            const tvector4& col)
 {
     AddLineToDraw(orig, orig + axis, col);
 
-    tvector3 cCntr = orig + axis; // cube center
-    float cSize = fct * 2;        // cube size
+    // tvector3 cCntr = orig + axis; // cube center
+    float cSize = fct * 2; // cube size
 
     tvector3 pts[8];
     pts[0] = orig + axis * (1 - cSize) - (vtx + vty) * cSize / 2.0f;
@@ -226,21 +239,22 @@ void CGizmoTransformRender::PrepareCubeAxis(const tvector3 &orig,
     };
 
     for (int i = 0; i < 36; i += 3)
-        AddTriangleToDraw(pts[index[i]], pts[index[i + 1]], pts[index[i + 2]],
-                          col);
+        AddTriangleToDraw(
+            pts[index[i]], pts[index[i + 1]], pts[index[i + 2]], col);
 }
 
-void CGizmoTransformRender::PrepareConeAxis(const tvector3 &orig,
-                                            const tvector3 &axis,
-                                            const tvector3 &vtx,
-                                            const tvector3 &vty, float fct,
-                                            float fct2, const tvector4 &col)
+void CGizmoTransformRender::PrepareConeAxis(const tvector3& orig,
+                                            const tvector3& axis,
+                                            const tvector3& vtx,
+                                            const tvector3& vty,
+                                            float           fct,
+                                            float           fct2,
+                                            const tvector4& col)
 {
     AddLineToDraw(orig, orig + axis, col);
 
     tvector3 prevPt;
-    for (int i = 0; i <= 30; i++)
-    {
+    for (int i = 0; i <= 30; i++) {
         tvector3 pt;
         pt = vtx * cos(((2 * ZPI) / 30.0f) * i) * fct;
         pt += vty * sin(((2 * ZPI) / 30.0f) * i) * fct;
@@ -254,15 +268,16 @@ void CGizmoTransformRender::PrepareConeAxis(const tvector3 &orig,
     }
 }
 
-void CGizmoTransformRender::PrepareCamem(const tvector3 &orig,
-                                         const tvector3 &vtx,
-                                         const tvector3 &vty, float ng,
-                                         tvector4 innerCol, tvector4 borderCol)
+void CGizmoTransformRender::PrepareCamem(const tvector3& orig,
+                                         const tvector3& vtx,
+                                         const tvector3& vty,
+                                         float           ng,
+                                         tvector4        innerCol,
+                                         tvector4        borderCol)
 {
     tvector3 prevVt;
     tvector3 vt;
-    for (int i = 0; i <= 50; i++)
-    {
+    for (int i = 0; i <= 50; i++) {
         vt = vtx * cos(((ng) / 50) * i);
         vt += vty * sin(((ng) / 50) * i);
         vt += orig;
@@ -270,8 +285,7 @@ void CGizmoTransformRender::PrepareCamem(const tvector3 &orig,
         if (i == 0)
             AddLineToDraw(orig, vt, borderCol);
 
-        if (i > 0)
-        {
+        if (i > 0) {
             AddLineToDraw(prevVt, vt, borderCol);
             AddTriangleToDraw(orig, prevVt, vt, innerCol);
         }
@@ -281,10 +295,12 @@ void CGizmoTransformRender::PrepareCamem(const tvector3 &orig,
     AddLineToDraw(orig, vt, borderCol);
 }
 
-void CGizmoTransformRender::PrepareQuad(const tvector3 &orig, float size,
-                                        const tvector3 &axisU,
-                                        const tvector3 &axisV,
-                                        tvector4 innerCol, tvector4 borderCol)
+void CGizmoTransformRender::PrepareQuad(const tvector3& orig,
+                                        float           size,
+                                        const tvector3& axisU,
+                                        const tvector3& axisV,
+                                        tvector4        innerCol,
+                                        tvector4        borderCol)
 {
 
     tvector3 pts[4];

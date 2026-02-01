@@ -1,16 +1,14 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(libgizmo VERSION 0.0.1 DESCRIPTION "libgizmo")
+project(libgizmo VERSION 1.0.0 DESCRIPTION "libgizmo")
 
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_definitions(-DGLEW_STATIC)
 
 add_subdirectory(vendors)
-add_subdirectory(app)
-
 
 option(BUILD_SHARED_LIBS "Build shared library" ON)
 
@@ -39,6 +37,7 @@ else()
     add_library(${PROJECT_NAME} STATIC ${SRC_CPP} ${SRC_H})
 endif()
 
+set_target_properties(${PROJECT_NAME} PROPERTIES EXPORT_COMPILE_COMMANDS ON)
 target_include_directories(${PROJECT_NAME}
     PRIVATE
         # where the library itself will look for its internal headers
@@ -76,3 +75,5 @@ set(
     TINY_RAY_TRACER_INSTALL_INCLUDEDIR
     ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+add_subdirectory(app)

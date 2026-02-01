@@ -28,18 +28,22 @@
 //
 
 #include "GizmoTransformScale.h"
-#include "LibBase.h"
 
-IGizmo *CreateScaleGizmo() { return new CGizmoTransformScale; }
+IGizmo *CreateScaleGizmo()
+{
+    return new CGizmoTransformScale;
+}
 
-CGizmoTransformScale::CGizmoTransformScale() : CGizmoTransform()
+CGizmoTransformScale::CGizmoTransformScale()
+    : CGizmoTransform()
 {
     m_ScaleType = SCALE_NONE;
 }
 
 CGizmoTransformScale::~CGizmoTransformScale() {}
 
-bool CGizmoTransformScale::GetOpType(SCALETYPE &type, unsigned int x,
+bool CGizmoTransformScale::GetOpType(SCALETYPE&   type,
+                                     unsigned int x,
                                      unsigned int y)
 {
     // init
@@ -57,13 +61,10 @@ bool CGizmoTransformScale::GetOpType(SCALETYPE &type, unsigned int x,
     mt.Inverse();
 
     // tmatrix mt;
-    if (mLocation == LOCATE_LOCAL)
-    {
+    if (mLocation == LOCATE_LOCAL) {
         mt = *m_pMatrix;
         mt.Inverse();
-    }
-    else
-    {
+    } else {
         // world
         mt.Translation(-m_pMatrix->V4.position);
     }
@@ -75,77 +76,53 @@ bool CGizmoTransformScale::GetOpType(SCALETYPE &type, unsigned int x,
     // plan 1 : X/Z
     df2 = RayTrace2(rayOrigin, rayDir, GetTransformedVector(1), mt, trss);
 
-    if ((df2.x < 0.4f) && (df2.z < 0.4f) && (df2.x > 0) && (df2.z > 0))
-    {
+    if ((df2.x < 0.4f) && (df2.z < 0.4f) && (df2.x > 0) && (df2.z > 0)) {
         type = SCALE_XYZ;
         return true;
-    }
-    else if ((df2.x >= 0) && (df2.x <= 1) && (fabs(df2.z) < 0.1f))
-    {
+    } else if ((df2.x >= 0) && (df2.x <= 1) && (fabs(df2.z) < 0.1f)) {
         type = SCALE_X;
         return true;
-    }
-    else if ((df2.z >= 0) && (df2.z <= 1) && (fabs(df2.x) < 0.1f))
-    {
+    } else if ((df2.z >= 0) && (df2.z <= 1) && (fabs(df2.x) < 0.1f)) {
         type = SCALE_Z;
         return true;
-    }
-    else if ((df2.x < 0.6f) && (df2.z < 0.6f) && (df2.x > 0.5f) &&
-             (df2.z > 0.5f))
-    {
+    } else if ((df2.x < 0.6f) && (df2.z < 0.6f) && (df2.x > 0.5f) &&
+               (df2.z > 0.5f)) {
         type = SCALE_XZ;
         return true;
-    }
-    else
-    {
+    } else {
         // plan 2 : X/Y
         df2 = RayTrace2(rayOrigin, rayDir, GetTransformedVector(2), mt, trss);
 
-        if ((df2.x < 0.4f) && (df2.y < 0.4f) && (df2.x > 0) && (df2.y > 0))
-        {
+        if ((df2.x < 0.4f) && (df2.y < 0.4f) && (df2.x > 0) && (df2.y > 0)) {
             type = SCALE_XYZ;
             return true;
-        }
-        else if ((df2.x >= 0) && (df2.x <= 1) && (fabs(df2.y) < 0.1f))
-        {
+        } else if ((df2.x >= 0) && (df2.x <= 1) && (fabs(df2.y) < 0.1f)) {
             type = SCALE_X;
             return true;
-        }
-        else if ((df2.y >= 0) && (df2.y <= 1) && (fabs(df2.x) < 0.1f))
-        {
+        } else if ((df2.y >= 0) && (df2.y <= 1) && (fabs(df2.x) < 0.1f)) {
             type = SCALE_Y;
             return true;
-        }
-        else if ((df2.x < 0.6f) && (df2.y < 0.6f) && (df2.x > 0.5f) &&
-                 (df2.y > 0.5f))
-        {
+        } else if ((df2.x < 0.6f) && (df2.y < 0.6f) && (df2.x > 0.5f) &&
+                   (df2.y > 0.5f)) {
             type = SCALE_XY;
             return true;
-        }
-        else
-        {
+        } else {
             // plan 3: Y/Z
             df2 =
                 RayTrace2(rayOrigin, rayDir, GetTransformedVector(0), mt, trss);
 
-            if ((df2.y < 0.4f) && (df2.z < 0.4f) && (df2.y > 0) && (df2.z > 0))
-            {
+            if ((df2.y < 0.4f) && (df2.z < 0.4f) && (df2.y > 0) &&
+                (df2.z > 0)) {
                 type = SCALE_XYZ;
                 return true;
-            }
-            else if ((df2.y >= 0) && (df2.y <= 1) && (fabs(df2.z) < 0.1f))
-            {
+            } else if ((df2.y >= 0) && (df2.y <= 1) && (fabs(df2.z) < 0.1f)) {
                 type = SCALE_Y;
                 return true;
-            }
-            else if ((df2.z >= 0) && (df2.z <= 1) && (fabs(df2.y) < 0.1f))
-            {
+            } else if ((df2.z >= 0) && (df2.z <= 1) && (fabs(df2.y) < 0.1f)) {
                 type = SCALE_Z;
                 return true;
-            }
-            else if ((df2.y < 0.6f) && (df2.z < 0.6f) && (df2.y > 0.5f) &&
-                     (df2.z > 0.5f))
-            {
+            } else if ((df2.y < 0.6f) && (df2.z < 0.6f) && (df2.y > 0.5f) &&
+                       (df2.z > 0.5f)) {
                 type = SCALE_YZ;
                 return true;
             }
@@ -158,8 +135,7 @@ bool CGizmoTransformScale::GetOpType(SCALETYPE &type, unsigned int x,
 
 bool CGizmoTransformScale::OnMouseDown(unsigned int x, unsigned int y)
 {
-    if (m_pMatrix)
-    {
+    if (m_pMatrix) {
         return GetOpType(m_ScaleType, x, y);
     }
 
@@ -167,10 +143,9 @@ bool CGizmoTransformScale::OnMouseDown(unsigned int x, unsigned int y)
     return false;
 }
 
-void CGizmoTransformScale::SnapScale(float &val)
+void CGizmoTransformScale::SnapScale(float& val)
 {
-    if (m_bUseSnap)
-    {
+    if (m_bUseSnap) {
         val *= (100.0f);
         SnapIt(val, m_ScaleSnap);
         val /= (100.0f);
@@ -179,52 +154,49 @@ void CGizmoTransformScale::SnapScale(float &val)
 
 void CGizmoTransformScale::OnMouseMove(unsigned int x, unsigned int y)
 {
-    if (m_ScaleType != SCALE_NONE)
-    {
+    if (m_ScaleType != SCALE_NONE) {
         tvector3 rayOrigin, rayDir, df, inters, machin;
         tvector3 scVect, scVect2;
 
         BuildRay(x, y, rayOrigin, rayDir);
         m_plan.RayInter(inters, rayOrigin, rayDir);
 
-        switch (m_ScaleType)
-        {
-        case SCALE_XZ:
-            scVect = tvector3(1, 0, 1);
-            break;
-        case SCALE_X:
-            scVect = tvector3(1, 0, 0);
-            break;
-        case SCALE_Z:
-            scVect = tvector3(0, 0, 1);
-            break;
-        case SCALE_XY:
-            scVect = tvector3(1, 1, 0);
-            break;
-        case SCALE_YZ:
-            scVect = tvector3(0, 1, 1);
-            break;
-        case SCALE_Y:
-            scVect = tvector3(0, 1, 0);
-            break;
-        case SCALE_XYZ:
-            scVect = tvector3(1, 1, 1);
-            break;
+        switch (m_ScaleType) {
+            case SCALE_XZ:
+                scVect = tvector3(1, 0, 1);
+                break;
+            case SCALE_X:
+                scVect = tvector3(1, 0, 0);
+                break;
+            case SCALE_Z:
+                scVect = tvector3(0, 0, 1);
+                break;
+            case SCALE_XY:
+                scVect = tvector3(1, 1, 0);
+                break;
+            case SCALE_YZ:
+                scVect = tvector3(0, 1, 1);
+                break;
+            case SCALE_Y:
+                scVect = tvector3(0, 1, 0);
+                break;
+            case SCALE_XYZ:
+                scVect = tvector3(1, 1, 1);
+                break;
+            case SCALE_NONE:
+                break;
         }
 
         df = inters - m_pMatrix->GetTranslation();
         df /= GetScreenFactor();
         scVect2 = tvector3(1, 1, 1) - scVect;
 
-        if (m_ScaleType == SCALE_XYZ)
-        {
-            int difx = x - m_LockX;
+        if (m_ScaleType == SCALE_XYZ) {
+            int   difx = x - m_LockX;
             float lng2 = 1.0f + (float(difx) / 200.0f);
             SnapScale(lng2);
             scVect *= lng2;
-        }
-        else
-        {
+        } else {
             int difx = x - m_LockX;
             int dify = y - m_LockY;
 
@@ -270,22 +242,16 @@ void CGizmoTransformScale::OnMouseMove(unsigned int x, unsigned int y)
         // mt2.Translation(0,0,0);
         // mt.Multiply(mt2);
 
-        if (mLocation == LOCATE_WORLD)
-        {
+        if (mLocation == LOCATE_WORLD) {
             mt2 = mt * m_svgMatrix;
-        }
-        else
-        {
+        } else {
             mt2 = mt * m_svgMatrix; //.Multiply(m_svgMatrix);
         }
         *m_pMatrix = mt2;
         // if (mTransform) mTransform->Update();
-    }
-    else
-    {
+    } else {
         // predict move
-        if (m_pMatrix)
-        {
+        if (m_pMatrix) {
             GetOpType(m_ScaleTypePredict, x, y);
         }
     }
@@ -298,18 +264,16 @@ void CGizmoTransformScale::OnMouseUp(unsigned int x, unsigned int y)
 
 void CGizmoTransformScale::Draw()
 {
-    if (m_pMatrix)
-    {
+    if (m_pMatrix) {
         ComputeScreenFactor();
 
         // glDisable(GL_DEPTH_TEST);
-        tvector3 orig(m_pMatrix->m16[12], m_pMatrix->m16[13],
-                      m_pMatrix->m16[14]);
+        tvector3 orig(
+            m_pMatrix->m16[12], m_pMatrix->m16[13], m_pMatrix->m16[14]);
 
         // axis
         tvector3 axeX(1, 0, 0), axeY(0, 1, 0), axeZ(0, 0, 1);
-        if (mLocation == LOCATE_LOCAL)
-        {
+        if (mLocation == LOCATE_LOCAL) {
             axeX.TransformVector(*m_pMatrix);
             axeY.TransformVector(*m_pMatrix);
             axeZ.TransformVector(*m_pMatrix);
@@ -321,9 +285,9 @@ void CGizmoTransformScale::Draw()
         float quadThresh = 0.5f * GetScreenFactor();
         float quadSize = 0.1f * GetScreenFactor();
 
-        tvector3 origQuadXZ = orig + (axeX + axeZ) * quadThresh;
-        tvector3 origQuadXY = orig + (axeX + axeY) * quadThresh;
-        tvector3 origQuadYZ = orig + (axeY + axeZ) * quadThresh;
+        // tvector3 origQuadXZ = orig + (axeX + axeZ) * quadThresh;
+        // tvector3 origQuadXY = orig + (axeX + axeY) * quadThresh;
+        // tvector3 origQuadYZ = orig + (axeY + axeZ) * quadThresh;
 
         tvector4 innerColQuadXZ = vector4(CGizmoTransform::Y_AXIS_COLOR, 0.6f);
         tvector4 innerColQuadXY = vector4(CGizmoTransform::Z_AXIS_COLOR, 0.6f);
@@ -334,30 +298,39 @@ void CGizmoTransformScale::Draw()
         tvector4 borderColQuadYZ = vector4(CGizmoTransform::X_AXIS_COLOR, 1);
 
         if ((m_ScaleTypePredict == SCALE_XZ) ||
-            (m_ScaleTypePredict == SCALE_XYZ))
-        {
+            (m_ScaleTypePredict == SCALE_XYZ)) {
             innerColQuadXZ = vector4(CGizmoTransform::SELECTION_COLOR, 0.6f);
             borderColQuadXZ = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }
         if ((m_ScaleTypePredict == SCALE_XY) ||
-            (m_ScaleTypePredict == SCALE_XYZ))
-        {
+            (m_ScaleTypePredict == SCALE_XYZ)) {
             innerColQuadXY = vector4(CGizmoTransform::SELECTION_COLOR, 0.6f);
             borderColQuadXY = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }
         if ((m_ScaleTypePredict == SCALE_YZ) ||
-            (m_ScaleTypePredict == SCALE_XYZ))
-        {
+            (m_ScaleTypePredict == SCALE_XYZ)) {
             innerColQuadYZ = vector4(CGizmoTransform::SELECTION_COLOR, 0.6f);
             borderColQuadYZ = vector4(CGizmoTransform::SELECTION_COLOR, 1);
         }
 
-        PrepareQuad(orig + (axeX + axeZ) * quadThresh, quadSize, axeX, axeZ,
-                    innerColQuadXZ, borderColQuadXZ);
-        PrepareQuad(orig + (axeX + axeY) * quadThresh, quadSize, axeX, axeY,
-                    innerColQuadXY, borderColQuadXY);
-        PrepareQuad(orig + (axeY + axeZ) * quadThresh, quadSize, axeY, axeZ,
-                    innerColQuadYZ, borderColQuadYZ);
+        PrepareQuad(orig + (axeX + axeZ) * quadThresh,
+                    quadSize,
+                    axeX,
+                    axeZ,
+                    innerColQuadXZ,
+                    borderColQuadXZ);
+        PrepareQuad(orig + (axeX + axeY) * quadThresh,
+                    quadSize,
+                    axeX,
+                    axeY,
+                    innerColQuadXY,
+                    borderColQuadXY);
+        PrepareQuad(orig + (axeY + axeZ) * quadThresh,
+                    quadSize,
+                    axeY,
+                    axeZ,
+                    innerColQuadYZ,
+                    borderColQuadYZ);
 
         axeX *= GetScreenFactor();
         axeY *= GetScreenFactor();

@@ -30,14 +30,14 @@
 #ifndef GIZMOTRANSFORM_H__
 #define GIZMOTRANSFORM_H__
 
-#include <glm/gtx/matrix_decompose.hpp>
-
 #include "GizmoTransformRender.h"
 #include "IGizmo.h"
 
-class CGizmoTransform : public IGizmo, protected CGizmoTransformRender
+class CGizmoTransform
+    : public IGizmo
+    , protected CGizmoTransformRender
 {
-public:
+  public:
     static tvector3 X_AXIS_COLOR;
     static tvector3 Y_AXIS_COLOR;
     static tvector3 Z_AXIS_COLOR;
@@ -96,10 +96,10 @@ public:
 
     // tools
 
-    void BuildRay(int x, int y, tvector3 &rayOrigin, tvector3 &rayDir)
+    void BuildRay(int x, int y, tvector3& rayOrigin, tvector3& rayDir)
     {
-        float frameX = (float)mScreenWidth;
-        float frameY = (float)mScreenHeight;
+        float    frameX = (float)mScreenWidth;
+        float    frameY = (float)mScreenHeight;
         tvector3 screen_space;
 
         // device space to normalized screen space
@@ -117,14 +117,13 @@ public:
 
     tvector3 GetVector(int vtID)
     {
-        switch (vtID)
-        {
-        case 0:
-            return tvector3(1, 0, 0);
-        case 1:
-            return tvector3(0, 1, 0);
-        case 2:
-            return tvector3(0, 0, 1);
+        switch (vtID) {
+            case 0:
+                return tvector3(1, 0, 0);
+            case 1:
+                return tvector3(0, 1, 0);
+            case 2:
+                return tvector3(0, 0, 1);
         }
         return tvector3(0, 0, 0);
     }
@@ -132,20 +131,18 @@ public:
     tvector3 GetTransformedVector(int vtID)
     {
         tvector3 vt;
-        switch (vtID)
-        {
-        case 0:
-            vt = tvector3(1, 0, 0);
-            break;
-        case 1:
-            vt = tvector3(0, 1, 0);
-            break;
-        case 2:
-            vt = tvector3(0, 0, 1);
-            break;
+        switch (vtID) {
+            case 0:
+                vt = tvector3(1, 0, 0);
+                break;
+            case 1:
+                vt = tvector3(0, 1, 0);
+                break;
+            case 2:
+                vt = tvector3(0, 0, 1);
+                break;
         }
-        if (mLocation == LOCATE_LOCAL)
-        {
+        if (mLocation == LOCATE_LOCAL) {
             vt.TransformVector(*m_pMatrix);
             vt.Normalize();
         }
@@ -157,20 +154,24 @@ public:
     {
         tmatrix viewproj = m_Model * m_Proj;
 
-        tvector4 trf =
-            vector4(m_pMatrix->V4.position.x, m_pMatrix->V4.position.y,
-                    m_pMatrix->V4.position.z, 1.f);
+        tvector4 trf = vector4(m_pMatrix->V4.position.x,
+                               m_pMatrix->V4.position.y,
+                               m_pMatrix->V4.position.z,
+                               1.f);
         trf.Transform(viewproj);
         m_ScreenFactor = mDisplayScale * 0.15f * trf.w;
     }
 
-    tplane m_plan;
+    tplane   m_plan;
     tvector3 m_LockVertex;
-    float m_Lng;
+    float    m_Lng;
 
-    tvector3 RayTrace2(const tvector3 &rayOrigin, const tvector3 &rayDir,
-                       const tvector3 &norm, const tmatrix &mt, tvector3 trss,
-                       bool lockVTNorm = true)
+    tvector3 RayTrace2(const tvector3& rayOrigin,
+                       const tvector3& rayDir,
+                       const tvector3& norm,
+                       const tmatrix&  mt,
+                       tvector3        trss,
+                       bool            lockVTNorm = true)
     {
         tvector3 df, inters;
 
@@ -181,12 +182,9 @@ public:
         df /= GetScreenFactor();
 
         m_LockVertex = df;
-        if (lockVTNorm)
-        {
+        if (lockVTNorm) {
             m_LockVertex.Normalize();
-        }
-        else
-        {
+        } else {
             m_LockVertex = inters;
         }
         m_Lng = df.Length();
@@ -201,29 +199,29 @@ public:
 
     virtual bool IsUsingSnap() { return m_bUseSnap; }
 
-    void SetLocation(LOCATION aLocation) { mLocation = aLocation; }
+    void     SetLocation(LOCATION aLocation) { mLocation = aLocation; }
     LOCATION GetLocation() { return mLocation; }
 
-protected:
+  protected:
     tmatrix *m_pMatrix;
-    tmatrix m_Model, m_Proj;
-    tmatrix m_invmodel, m_invproj;
+    tmatrix  m_Model, m_Proj;
+    tmatrix  m_invmodel, m_invproj;
     tvector3 m_CamSrc, m_CamDir, m_CamUp;
 
     tmatrix m_svgMatrix;
-    float m_ScreenFactor;
-    bool m_bUseSnap;
-    float mDisplayScale;
+    float   m_ScreenFactor;
+    bool    m_bUseSnap;
+    float   mDisplayScale;
 
     LOCATION mLocation;
 
-    tmatrix mWorkingMatrix; // for dissociated components
-    tvector3 *mEditPos, *mEditScale;
+    tmatrix      mWorkingMatrix; // for dissociated components
+    tvector3    *mEditPos, *mEditScale;
     tquaternion *mEditQT;
     // draw helpers
 
     unsigned int mMask;
-    void SnapIt(float &pos, float &snap)
+    void         SnapIt(float& pos, float& snap)
     {
         float sn = (float)fmod(pos, snap);
         if (fabs(sn) < (snap * 0.25f))

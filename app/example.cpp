@@ -1,6 +1,5 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <OpenGL/glu.h>
 #include <stdio.h> // Header File For Standard Input/Output
 
 #include "utils.h"
@@ -10,7 +9,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 std::string vertexShaderSource =
     "#version 330 core\n"
@@ -98,40 +96,235 @@ void InitGL(GLvoid) // All Setup For OpenGL Goes Here
 
 void InitCube()
 {
-    float vertices[] = {
-        0.6f, 0.6f, 0.6f, 1.f, 0.0f, 0.0f, -1.0f, -1.0f, 1.0f, 0.6f, 0.6f, 0.6f,
-        1.f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 1.f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 1.f, 0.0f, 1.0f, -1.0f, 1.0f, 1.0f,
-        // Back Face
-        0.5f, 0.5f, 0.5f, 1.f, 1.0f, 0.0f, -1.0f, -1.0f, -1.0f, 0.5f, 0.5f,
-        0.5f, 1.f, 1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 0.5f, 0.5f, 0.5f, 1.f, 0.0f,
-        1.0f, 1.0f, 1.0f, -1.0f, 0.5f, 0.5f, 0.5f, 1.f, 0.0f, 0.0f, 1.0f, -1.0f,
-        -1.0f,
-        // Top Face
-        0.4f, 0.4f, 0.4f, 1.f, 0.0f, 1.0f, -1.0f, 1.0f, -1.0f, 0.4f, 0.4f, 0.4f,
-        1.f, 0.0f, 0.0f, -1.0f, 1.0f, 1.0f, 0.4f, 0.4f, 0.4f, 1.f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 0.4f, 0.4f, 0.4f, 1.f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f,
-        // Bottom Face
-        0.6f, 0.6f, 0.6f, 1.f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f, 0.6f, 0.6f,
-        0.6f, 1.f, 0.0f, 1.0f, 1.0f, -1.0f, -1.0f, 0.6f, 0.6f, 0.6f, 1.f, 0.0f,
-        0.0f, 1.0f, -1.0f, 1.0f, 0.6f, 0.6f, 0.6f, 1.f, 1.0f, 0.0f, -1.0f,
-        -1.0f, 1.0f,
-        // Right face
-        0.5f, 0.5f, 0.5f, 1.f, 1.0f, 0.0f, 1.0f, -1.0f, -1.0f, 0.5f, 0.5f, 0.5f,
-        1.f, 1.0f, 1.0f, 1.0f, 1.0f, -1.0f, 0.5f, 0.5f, 0.5f, 1.f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 0.5f, 0.5f, 0.5f, 1.f, 0.0f, 0.0f, 1.0f, -1.0f, 1.0f,
-        // Left Face
-        0.4f, 0.4f, 0.4f, 1.f, 0.0f, 0.0f, -1.0f, -1.0f, -1.0f, 0.4f, 0.4f,
-        0.4f, 1.f, 1.0f, 0.0f, -1.0f, -1.0f, 1.0f, 0.4f, 0.4f, 0.4f, 1.f, 1.0f,
-        1.0f, -1.0f, 1.0f, 1.0f, 0.4f, 0.4f, 0.4f, 1.f, 0.0f, 1.0f, -1.0f, 1.0f,
-        -1.0f};
+    float vertices[] = { 0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         -1.0f,
+                         -1.0f,
+                         1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         1.0f,
+                         // Back Face
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         -1.0f,
+                         -1.0f,
+                         -1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         -1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         -1.0f,
+                         // Top Face
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         -1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         -1.0f,
+                         1.0f,
+                         1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         // Bottom Face
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         -1.0f,
+                         -1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         -1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         0.6f,
+                         0.6f,
+                         0.6f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         -1.0f,
+                         -1.0f,
+                         1.0f,
+                         // Right face
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         -1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         1.0f,
+                         0.5f,
+                         0.5f,
+                         0.5f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         // Left Face
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         0.0f,
+                         0.0f,
+                         -1.0f,
+                         -1.0f,
+                         -1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         1.0f,
+                         0.0f,
+                         -1.0f,
+                         -1.0f,
+                         1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         1.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         1.0f,
+                         0.4f,
+                         0.4f,
+                         0.4f,
+                         1.f,
+                         0.0f,
+                         1.0f,
+                         -1.0f,
+                         1.0f,
+                         -1.0f };
 
-    unsigned int indices[] = {           // note that we start from 0!
-                              0,  1,  2, // first triangle
-                              0,  2,  3, // second triangle
-                              4,  5,  6,  4,  6,  7,  8,  9,  10, 8,
-                              10, 11, 12, 13, 14, 12, 14, 15, 16, 17,
-                              18, 16, 18, 19, 20, 21, 22, 20, 22, 23};
+    unsigned int indices[] = {            // note that we start from 0!
+                               0,  1,  2, // first triangle
+                               0,  2,  3, // second triangle
+                               4,  5,  6,  4,  6,  7,  8,  9,  10, 8,
+                               10, 11, 12, 13, 14, 12, 14, 15, 16, 17,
+                               18, 16, 18, 19, 20, 21, 22, 20, 22, 23
+    };
 
     glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
@@ -145,16 +338,24 @@ void InitCube()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-                 GL_STATIC_DRAW);
+    glBufferData(
+        GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float),
-                          (void *)0);
+    glVertexAttribPointer(
+        0, 4, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void *)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 9 * sizeof(float),
+    glVertexAttribPointer(1,
+                          2,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          9 * sizeof(float),
                           (void *)(sizeof(float) * 4));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float),
+    glVertexAttribPointer(2,
+                          3,
+                          GL_FLOAT,
+                          GL_FALSE,
+                          9 * sizeof(float),
                           (void *)(sizeof(float) * 6));
     glEnableVertexAttribArray(2);
 
@@ -175,8 +376,8 @@ int DrawGLScene(GLvoid) // Here's Where We Do All The Drawing
 
     shader.use();
 
-    glm::mat4 proj = glm::perspective(45.0f, screenWidth / (float)screenHeight,
-                                      0.001f, 100000.0f);
+    glm::mat4 proj = glm::perspective(
+        45.0f, screenWidth / (float)screenHeight, 0.001f, 100000.0f);
 
     shader.setMat4("proj", proj);
     shader.setMat4("view", view);
@@ -185,8 +386,7 @@ int DrawGLScene(GLvoid) // Here's Where We Do All The Drawing
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
-    if (gizmo)
-    {
+    if (gizmo) {
         gizmo->SetCameraMatrix(&view[0][0], &proj[0][0]);
 
         Flag depthTestFlag = Flag::disable(GL_DEPTH_TEST);
@@ -206,42 +406,36 @@ int DrawGLScene(GLvoid) // Here's Where We Do All The Drawing
     return true; // Keep Going
 }
 
-void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
+void mouse_button_callback(GLFWwindow *window, int button, int action, int)
 {
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
 
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
         gizmo->OnMouseDown(xpos, ypos);
     }
 
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE)
-    {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) {
         gizmo->OnMouseUp(xpos, ypos);
     }
 }
 
-void mouse_callback(GLFWwindow *window, double xposIn, double yposIn)
+void mouse_callback(GLFWwindow *, double xposIn, double yposIn)
 {
     gizmo->OnMouseMove(xposIn, yposIn);
 }
 
-void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                  int mods)
+void key_callback(GLFWwindow *window, int, int, int action, int)
 {
-    if (glfwGetKey(window, GLFW_KEY_A) && action == GLFW_PRESS)
-    {
+    if (glfwGetKey(window, GLFW_KEY_A) && action == GLFW_PRESS) {
         gizmo = gizmoMove;
         gizmo->SetLocation(IGizmo::LOCATE_LOCAL);
     }
-    if (glfwGetKey(window, GLFW_KEY_Z) && action == GLFW_PRESS)
-    {
+    if (glfwGetKey(window, GLFW_KEY_Z) && action == GLFW_PRESS) {
         gizmo = gizmoRotate;
         gizmo->SetLocation(IGizmo::LOCATE_LOCAL);
     }
-    if (glfwGetKey(window, GLFW_KEY_E) && action == GLFW_PRESS)
-    {
+    if (glfwGetKey(window, GLFW_KEY_E) && action == GLFW_PRESS) {
         gizmo = gizmoScale;
         gizmo->SetLocation(IGizmo::LOCATE_LOCAL);
     }
@@ -249,7 +443,7 @@ void key_callback(GLFWwindow *window, int key, int scancode, int action,
     gizmo->SetScreenDimension(screenWidth, screenHeight);
 }
 
-void framebuffer_size_callback(GLFWwindow *window, int width, int height)
+void framebuffer_size_callback(GLFWwindow *, int width, int height)
 {
     // make sure the viewport matches the new window dimensions; note that width
     // and height will be significantly larger than specified on retina
@@ -273,8 +467,7 @@ int main(void)
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
+    if (!window) {
         glfwTerminate();
         return -1;
     }
@@ -289,8 +482,7 @@ int main(void)
     // start GLEW extension handler
     glewExperimental = GL_TRUE;
 
-    if (glewInit() != GLEW_OK)
-    {
+    if (glewInit() != GLEW_OK) {
         std::cout << "Failed to initialize GLEW" << std::endl;
         return -1;
     }
@@ -307,8 +499,7 @@ int main(void)
     InitCube();
 
     /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)) {
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         DrawGLScene();

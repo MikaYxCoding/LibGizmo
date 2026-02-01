@@ -30,56 +30,75 @@
 #ifndef GIZMOTRANSFORMRENDER_H__
 #define GIZMOTRANSFORMRENDER_H__
 
+#include "ZBaseMaths.h"
+
 #define GLFW_INCLUDE_NONE
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "LibBase.h"
-
 typedef tvector4 tplane;
 
-#define GLM_SWIZZLE
+#define GLM_FORCE_SWIZZLE
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/string_cast.hpp>
 
 class CGizmoTransformRender
 {
-public:
+  public:
     CGizmoTransformRender() {}
     virtual ~CGizmoTransformRender() {}
 
     static glm::mat4 proj;
     static glm::mat4 view;
 
-    static void PrepareCircle(const tvector3 &orig, const tvector3 &vtx,
-                              const tvector3 &vty, tvector4 col);
-    static void PrepareCircleHalf(const tvector3 &orig, const tvector3 &vtx,
-                                  const tvector3 &vty, tplane &camPlan,
-                                  tvector4 col);
-    static void PrepareCubeAxis(const tvector3 &orig, const tvector3 &axis,
-                                const tvector3 &vtx, const tvector3 &vty,
-                                float fct, float fct2, const tvector4 &col);
-    static void PrepareConeAxis(const tvector3 &orig, const tvector3 &axis,
-                                const tvector3 &vtx, const tvector3 &vty,
-                                float fct, float fct2, const tvector4 &col);
-    static void PrepareCamem(const tvector3 &orig, const tvector3 &vtx,
-                             const tvector3 &vty, float ng, tvector4 innerCol,
-                             tvector4 borderCol);
-    static void PrepareQuad(const tvector3 &orig, float size,
-                            const tvector3 &axisU, const tvector3 &axisV,
-                            tvector4 innerCol, tvector4 borderCol);
+    static void PrepareCircle(const tvector3& orig,
+                              const tvector3& vtx,
+                              const tvector3& vty,
+                              tvector4        col);
+    static void PrepareCircleHalf(const tvector3& orig,
+                                  const tvector3& vtx,
+                                  const tvector3& vty,
+                                  tplane&         camPlan,
+                                  tvector4        col);
+    static void PrepareCubeAxis(const tvector3& orig,
+                                const tvector3& axis,
+                                const tvector3& vtx,
+                                const tvector3& vty,
+                                float           fct,
+                                float           fct2,
+                                const tvector4& col);
+    static void PrepareConeAxis(const tvector3& orig,
+                                const tvector3& axis,
+                                const tvector3& vtx,
+                                const tvector3& vty,
+                                float           fct,
+                                float           fct2,
+                                const tvector4& col);
+    static void PrepareCamem(const tvector3& orig,
+                             const tvector3& vtx,
+                             const tvector3& vty,
+                             float           ng,
+                             tvector4        innerCol,
+                             tvector4        borderCol);
+    static void PrepareQuad(const tvector3& orig,
+                            float           size,
+                            const tvector3& axisU,
+                            const tvector3& axisV,
+                            tvector4        innerCol,
+                            tvector4        borderCol);
 
     static void Draw();
 
-private:
-    static unsigned int SHADER_PROG_ID, VBO, VAO;
+  private:
+    static unsigned int       SHADER_PROG_ID, VBO, VAO;
     static std::vector<float> lineData;
     static std::vector<float> triangleData;
 
     static void Init();
-    static void AddTriangleToDraw(tvector3 pt1, tvector3 pt2, tvector3 pt3,
+    static void AddTriangleToDraw(tvector3 pt1,
+                                  tvector3 pt2,
+                                  tvector3 pt3,
                                   tvector4 col);
     static void AddLineToDraw(tvector3 pt1, tvector3 pt2, tvector4 col);
 };
