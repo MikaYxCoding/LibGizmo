@@ -155,7 +155,7 @@ void CGizmoTransformRender::Draw()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER,
                  triangleData.size() * sizeof(triangleData),
-                 &triangleData[0],
+                 triangleData.data(),
                  GL_DYNAMIC_DRAW);
     glDrawArrays(GL_TRIANGLES, 0, triangleData.size() / 7);
 
